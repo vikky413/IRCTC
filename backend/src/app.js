@@ -11,7 +11,9 @@ const priceModel = require('./models/price')
 const bookModel = require('./models/book')
 const searchModel = require('./models/search')
 const confirmModel = require('./models/confirm')
+const otpModel = require("./models/otp")
 var jwt = require("jsonwebtoken");
+const nodemailer = require('nodemailer')
 
 
 const port = process.env.PORT || 5000;
@@ -51,11 +53,14 @@ function checkEmail(req, res, next) {
     if (err) throw err;
     if (data) {
       return res.render('index');
-     console.log("Email already Exist")
+   
     }
     next();
   });
 }
+
+
+
 
 
 
@@ -68,6 +73,122 @@ app.get("/", (req, res) =>{
     res.render("index")
   }
 });
+
+
+
+app.post('/mail', async (req,res)=> {
+ 
+  const code = req.body.code;
+
+  const checkUser = otpModel.findOne({ code:code });
+  checkUser.exec((err, data) => {
+   if(data) {
+    const gmail= data.email;
+    res.render('generate',{title:"Create New Password",msg:'',gmail:gmail,succ:''})
+   }
+   else {
+    res.render('forget',{ title: 'IRCTC', msg: '',succ:'',gmail:'',errors:'OTP NOT MATCHED' })
+   }
+  })
+
+})
+
+app.get('/forget',  (req,res)=> {
+  res.render('forget',{ title: 'IRCTC', msg: '',succ:'',email:'',errors:'' })
+})
+app.get('/generate',(req,res)=> {
+  res.render("generate",{title:"Create New Password",msg:'',gmail:'',succ:''})
+})
+app.post('/generate',async (req,res)=> {
+  const email = req.body.gmail;
+  const password = req.body.password;
+  const confpassword = req.body.confpassword;
+  if(!password || !confpassword) {
+    res.render("generate",{title:"Create New Password",msg:'Please fill all details',gmail:'',succ:''})
+  }
+  else {
+    if(password == confpassword){
+      
+      const checkUser = userModel.findOne({ email:email });
+      await checkUser.exec((err,data)=>{
+        if(err) throw err
+        const id = data._id;
+        var passdelete = userModel.findByIdAndUpdate(id, { password:password,
+ confirmpassword:confpassword });
+        passdelete.exec(function (err) {
+          if (err) throw err;
+          res.render("generate",{title:"Create New Password",msg:'',gmail:'',succ:'Password Reset Successfully'});
+        });
+      })
+  
+ 
+    }
+    else {
+      res.render("generate",{title:"Create New Password",msg:'Password and confirm password not matched',gmail:''});
+    }
+  }
+})
+
+app.post('/forget', async (req,res)=> {
+  var email = req.body.email;
+  var minm = 100000;
+  var maxm = 999999;
+  var code = Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+  var expiryt = new Date().getTime() + 300*1000;
+  const checkUser = userModel.findOne({ email:email });
+  checkUser.exec((err, data) => {
+   if(data){
+
+    var userDetails = new otpModel({
+    
+      email:email,
+      code:code,
+      expiryt:expiryt
+      
+    });
+    userDetails.save((err, doc) => {
+      if (err) throw err;
+      res.render('forget',{title:"IRCTC", msg:"",succ:'OTP send in your mail',gmail:email,errors:''});
+   
+    });
+
+
+    let transporter = nodemailer.createTransport({
+    service:"gmail",
+    auth : {
+      user:"bhimanpallyd@gmail.com",
+      pass:"zedvjyfuldrbxvoh"
+    },
+    tls:{
+      rejectUnauthorized:false
+    }
+  })
+  
+  let mailOptions = {
+    from: "bhimanpallyd@gmail.com",
+    to: email,
+    subject:"OTP FOR IRCTC",
+    text:`Your OTP For IRCTC ACCOUNT :  ${code}`
+  }
+
+  transporter.sendMail(mailOptions,(err,success)=>{
+  if(err) {
+    throw err;
+  }
+  else {
+    console.log("successfully sent")
+  }
+  })
+  }
+  else {
+    res.render("forget",{title:"college dunia", msg:"Email not exist",succ:'',errors:''})
+  }
+  })
+
+})
+
+
+
 
 app.get('/home', async (req,res)=> {
   var loginUser = localStorage.getItem("loginUser");
@@ -245,7 +366,9 @@ app.get("/user/delete/:id",(req,res)=> {
   })
 
   app.post('/confirm-ticket',async (req,res)=> {
+
     // console.log(req.body)
+    // res.redirect('/ticket')
     var loginUser = localStorage.getItem("loginUser");
     // res.redirect('payment')
     const bookdetail = bookModel.find({});
@@ -270,6 +393,8 @@ app.get("/user/delete/:id",(req,res)=> {
    const subject = req.body.subject;
    const age = req.body.age;
    const coach = req.body.coach;
+   const passangers = req.body.passangers;
+   const pass_age = req.body.pass_age;
    const pnr = Math.floor(Math.random() * 1000000000);
    const tid = 100;
    if(!sfrom || !sto || !trainname  || !trainnumber || !dob || !gender || !fname || !lname || !email || !phone || !age || !coach){
@@ -292,6 +417,8 @@ app.get("/user/delete/:id",(req,res)=> {
       coach:coach,
       subject:subject,
       pnr:pnr,
+      passangers:passangers,
+      pass_age:pass_age,
       tid:tid
     });
     trainDetails.save((err,doc)=>{
@@ -333,9 +460,6 @@ catch(err){
       console.log("please Fill all the details")
     }
     else {
-
-  
-
       var userDetails=new trnModel({
        name:name,
        number:number
