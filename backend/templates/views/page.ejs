@@ -167,7 +167,68 @@
                                 </div>
                             </div>
                         </div>
-                        
+                          <h3 style="margin: 10px;">Other Passangers Details</h3>
+                        <% if(confd[len-1].passangers != ''){ %>
+                            
+                            <% for(var i=0;i< confd[len-1].passangers.length;i++){  %>
+                        <div class="row row-space">
+                            <div class="col-1">
+                                <div class="input-group">
+                                    <label class="label">First Name</label>
+                                    <h3><%= confd[len-1].passangers[i] %> </h3>
+                                                          
+                                    <p> Age : <%= confd[len-1].pass_age[i] %></p>
+                                   
+                                </div>
+                            </div>
+                           
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Ticket Status</label>
+                                    <h3>Confirmed</h3>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Coach</label>
+                                    <h3><%= confd[len-1].coach %></h3>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Berth</label>
+                                
+                                    <% if(confd[len-1].pass_age[i] >= 60) { %>
+                                        <h3>14</h3>
+                                        <% }else if(confd[len-1].pass_age[i]%2 == 0){ %>
+                                            <h3>18</h3>
+                                      <%  }else if(confd[len-1].pass_age[i]%3 == 0){ %>
+                                      <h3>17</h3>
+                                      <%  }else if(confd[len-1].pass_age[i]%5 == 0){ %>
+                                      <h3>12</h3>
+                                      <%  } else { %>
+                                      <h3>13</h3>
+                                      <% } %>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="input-group">
+                                    <label class="label">Berth Type</label>
+                                    <% if(confd[len-1].pass_age[i] >= 60) { %>
+                                    <h3>Lower</h3>
+                                    <% }else if(confd[len-1].pass_age[i]%2 == 0){ %>
+                                        <h3>Side Upper</h3>
+                                  <%  }else if(confd[len-1].pass_age[i]%3 == 0){ %>
+                                  <h3>Side Lower</h3>
+                                  <%  }else if(confd[len-1].age%5 == 0){ %>
+                                  <h3>Middle</h3>
+                                  <%  } else { %>
+                                  <h3>Upper</h3>
+                                  <% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <% }} %>
                         <div class="p-t-10">
                             <button class="btn btn--radius-2 btn--blue" type="submit"><a href="/home">OK</a></button>
                         </div>
