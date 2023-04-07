@@ -63,6 +63,12 @@ const confirmSchema = new Schema({
     subject :{
         type:Number,
     },
+    passangers:{
+        type:Array
+    },
+    pass_age:{
+        type:Array
+    },
     tid: {
         type:Number,
         required:true
