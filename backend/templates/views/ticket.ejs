@@ -21,6 +21,7 @@
     <!-- Vendor CSS-->
     <link href="vendor/select2/select2.min.css" rel="stylesheet" media="all">
     <link href="vendor/datepicker/daterangepicker.css" rel="stylesheet" media="all">
+    <script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!-- Main CSS-->
     <link href="css/main.css" rel="stylesheet" media="all">
@@ -34,7 +35,7 @@
                     <% var len = bks.length %>
                     <% var lens = station.length %>
                     <h2 class="title">RESERVATION FORM</h2>
-                    <form action="/confirm-ticket" method="post">
+                    <form action="/confirm-ticket" id="my-form" method="post">
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
@@ -106,38 +107,73 @@
                             <div class="col-2"> 
                                 <div class="input-group">
                                     <label class="label">First Name</label>
-                                    <input class="input--style-4" type="text" maxlength="12" pattern="[A-Za-z]{3,}" name="fname">
+                                    <input class="input--style-4" type="text" maxlength="12" pattern="[A-Za-z]{3,}" name="fname" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Last Name</label>
-                                    <input class="input--style-4" type="text" maxlength="12" pattern="[A-Za-z]{3,}" name="lname">
+                                    <input class="input--style-4" type="text" maxlength="12" pattern="[A-Za-z]{3,}" name="lname" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Age</label>
-                                    <input class="input--style-4" type="text" maxlength="2" pattern="[1-9]{1}[0-9]{1}" name="age">
+                                    <input class="input--style-4" type="text" maxlength="2" pattern="[1-9]{1}[0-9]{1}" name="age" required>
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Phone Number</label>
-                                    <input class="input--style-4" type="text" maxlength="10" pattern="[6-9]{1}[0-9]{9}" name="phone">
+                                    <input class="input--style-4" type="text" maxlength="10" pattern="[6-9]{1}[0-9]{9}" name="phone" required>
                                 </div>
                             </div>
-                            
+
+
                         </div>
-                        <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Continue</button>
-                        </div>
+                        <div class="fields"></div>
+
+                        <p>
+                            <button type="button" class="add-fields" style="width: 221px; height: 47px; margin: 23px; background-color: blue;color: white;">
+                               Add Passanger
+                            </button>
+                    
+                            <button type="submit" style="width: 221px; height: 47px; margin: 23px;background-color: blue;color: white;">
+                                Confirm
+                            </button>
+                        </p>
                     </form>
+                    
                 </div>
             </div>
         </div>
     </div>
 
+    <script type="text/x-templates" id="fields-templates">
+        <p class="input-fields" style="background-color: darkgrey;">
+            <input name="passangers" type="text" maxlength="20" pattern="[A-Z a-z]{3,}" placeholder=" Enter your Name" style="margin: 13px;height: 40px; background-color: gainsboro;width: -webkit-fill-available;">
+            <input name="pass_age" type="text" maxlength="2" pattern="[1-9]{1}[0-9]{1}" placeholder="  Enter Your Age" style="margin: 13px;height: 40px; background-color: gainsboro;width: auto">
+            <button type="button" class="remove-fields" style="width: 210px; height: 27px;  background-color: red;color: white;margin-left: 251px;margin-bottom: 16px;">
+                Remove Passanger
+            </button>
+        </p>
+    </script>
+    
+    <script>
+    $(function () {
+        var FIELDS_TEMPLATE = $('#fields-templates').text();
+        var $form = $('#my-form');
+        var $fields = $form.find('.fields');
+    
+        $form.on('click', '.add-fields', function () {
+            $fields.prepend($(FIELDS_TEMPLATE));
+        });
+    
+        $form.on('click', '.remove-fields', function (event) {
+            $(event.target).closest('.input-fields').remove();
+        });
+    });
+    </script>
     <!-- Jquery JS-->
     <script src="vendor/jquery/jquery.min.js"></script>
     <!-- Vendor JS-->
