@@ -248,6 +248,14 @@
 
                                         <label for="username" class="col-md-3 ">Coach</label>
                                         <div class="col-md-9">
+                                            <p><%= row.fname %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="username" class="col-md-3 ">Coach</label>
+                                        <div class="col-md-9">
                                             <p><%= row.coach %></p>
                                         </div>
                                     </div>
@@ -286,6 +294,68 @@
                                               <% } %>
                                         </div>
                                     </div>
+
+                                    <h3 style="margin: 10px;">Other Passanger Details</h3>
+
+                  <% if(row.passangers != ''){ %>
+
+                    <% for(var i=0;i< row.passangers.length;i++){  %>
+                                
+                                    <div class="form-group">
+
+                                        <label for="username" class="col-md-3 ">Name</label>
+                                        <div class="col-md-9">
+                                            <p><%= row.passangers[i] %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="username" class="col-md-3 ">Coach</label>
+                                        <div class="col-md-9">
+                                            <p><%= row.coach %></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="username" class="col-md-3 ">Berth</label>
+                                        <div class="col-md-9">                                        
+                                    <% if(row.pass_age[i] >= 60) { %>
+                                        <p>14</p>
+                                        <% }else if(row.pass_age[i]%2 == 0){ %>
+                                            <p>18</p>
+                                      <%  }else if(row.pass_age[i]%3 == 0){ %>
+                                      <p>17</p>
+                                      <%  }else if(row.pass_age[i]%5 == 0){ %>
+                                      <p>12</p>
+                                      <%  } else { %>
+                                      <p>13</p>
+                                      <% } %>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                        <label for="username" class="col-md-3 ">Berth Type</label>
+                                        <div class="col-md-9">
+                                            <% if(row.pass_age[i] >= 60) { %>
+                                                <p>Lower</p>
+                                                <% }else if(row.pass_age[i]%2 == 0){ %>
+                                                    <p>Side Upper</p>
+                                              <%  }else if(row.pass_age[i]%3 == 0){ %>
+                                              <p>Side Lower</p>
+                                              <%  }else if(row.pass_age[i]%5 == 0){ %>
+                                              <p>Middle</p>
+                                              <%  } else { %>
+                                              <p>Upper</p>
+                                              <% } %>
+                                        </div>
+                                    </div>
+                                     
+                <% }} %>
+
+
+
                                     <div class="form-group">
                                         <!-- Button -->
                                         <% if(row.tid == 100){ %>
